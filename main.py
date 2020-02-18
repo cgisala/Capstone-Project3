@@ -1,5 +1,6 @@
 from artist import Artist
 from artwork import Artwork
+import get
 import sqlite3
 import os
 
@@ -10,20 +11,15 @@ def main():
         menu()
         choice = input('choice: ')
         if choice == '1':
-            # Prompt user to enter the artist info
-            name = input('Enter artist name: ')
-            email = input ('Enter artist email: ')
-
-            add_artist(name, email)
+            name, email = get.artist_info() # Prompt user to enter the artist info
+            add_artist(name, email) 
         elif choice == '2':
-            pass
+            name = get.artist_name()  # Prompts for the artist email
+            search_artwork(db, name)
         elif choice == '3':
             pass
         elif choice == '4':
-            # Prompt user to enter info
-            name = input('Enter artist name: ').lower()
-            artwork = input('Enter artwork name: ').lower()
-            price = input('Enter artwork price: ')
+            name, artwork, price = get.artwork_info()  # Prompt user to enter info
             add_artwork(db, name, artwork, price)
         elif choice == '5':
             pass
@@ -61,24 +57,40 @@ def add_artwork(db, name, artwork, price):
         con.row_factory = sqlite3.Row # This row_factory allows access to the data row name
         rows = con.execute(get_artist_sql, (name,) )
         artist = rows.fetchone()
+        con.close()
+        """ 
+        Checks to see if the artist is in the database prior to entering the artwork info.
+        If the artist is not in the database the artist is added first to the artist table first before the artwork is added to the database.
+        """
         if artist == None:
             print('\nThe artist is not in the database.\n')
-            email = input("Enter artist email: ")
-            con.close()
+            email = get.artist_email() 
             add_artist(name, email) # Calls the add artist function
-            new_artwork = Artwork(name, artwork, price)
-            new_artwork.add_artwork()
+            new_artwork(name,artwork, price)
         else:
-            new_artwork = Artwork(name, artwork, price)
-            new_artwork.add_artwork()
+            new_artwork(name,artwork, price)
     except sqlite3.Error as e:
         print('Name not found')
         print(e)
     finally:
         con.close()
 
-def search_artwork():
-    pass
+# Creates artwork object and adds the info on the artwork table
+def new_artwork(name, artwork, price):
+    new_artwork = Artwork(name, artwork, price)
+    new_artwork.add_artwork()
+
+def search_artwork(db, artist):
+    get_artwork_by_name_sql = 'SELECT name, * FROM artwork WHERE artist = ?'
+
+    con = sqlite3.connect(db) # Creates or opens connections to db file
+    con.row_factory = sqlite3.Row # This row_factory allows access to data by row name
+    rows = con.execute(get_artwork_by_name_sql, (artist, ) )
+
+    # Prints the search result
+    for r in rows:
+        print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}")
+ 
 
 def display_artwork():
     pass
