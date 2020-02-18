@@ -14,10 +14,11 @@ def main():
             name, email = get.artist_info() # Prompt user to enter the artist info
             add_artist(name, email) 
         elif choice == '2':
-            name = get.artist_name()  # Prompts for the artist email
+            name = get.artist_name()  # Prompts for the artist name
             search_artwork(db, name)
         elif choice == '3':
-            pass
+            name = get.artist_name()
+            display_artwork(db, name)
         elif choice == '4':
             name, artwork, price = get.artwork_info()  # Prompt user to enter info
             add_artwork(db, name, artwork, price)
@@ -29,7 +30,6 @@ def main():
             break
         else:
             print('\nChoice is not in the menu')
-
 
 def menu():
     print('\nMenu: \n'
@@ -71,7 +71,6 @@ def add_artwork(db, name, artwork, price):
             new_artwork(name,artwork, price)
     except sqlite3.Error as e:
         print('Name not found')
-        print(e)
     finally:
         con.close()
 
@@ -89,11 +88,23 @@ def search_artwork(db, artist):
 
     # Prints the search result
     for r in rows:
-        print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}")
- 
+        if r['availability'] == '1':
+            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: for sale")
+        if r['availability'] == '0':
+            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: sold")
+        
+def display_artwork(db, artist):
+    get_artwork_by_name_sql = 'SELECT name, * FROM artwork WHERE artist = ?'
 
-def display_artwork():
-    pass
+    con = sqlite3.connect(db) # Creates or opens connections to db file
+    con.row_factory = sqlite3.Row # This row_factory allows access to data by row name
+    rows = con.execute(get_artwork_by_name_sql, (artist, ) )
+
+    # Prints the search result
+    for r in rows:
+        if r['availability'] == '1':
+            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: for sale")
+        
 
 def delete_artwork():
     pass
