@@ -13,7 +13,7 @@ def artwork_info():
     name = input('\nEnter artist name: ').lower()
     artwork = input('Enter artwork name: ').lower()
     price = input('Enter artwork price: ')
-    while True: # Loops while the user to enters non numbers
+    while True: # Loops until the user enters numbers
         if price.isdigit():
             break
         else:
