@@ -3,8 +3,8 @@
 
 # Prompts the user to enter the name and email of the artist
 def artist_info():
-    name = input('\nEnter artist name: ')
-    email = input ('Enter artist email: ')
+    name = input('\nEnter artist name: ').lower()
+    email = input ('Enter artist email: ').lower()
 
     return name, email
 
