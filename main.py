@@ -46,7 +46,7 @@ def menu():
 
 # Adds the artist info to the artist table
 def add_artist(name, email):
-    new_artist = Artist(name.lower(), email.lower())
+    new_artist = Artist(name, email)
     new_artist.add_artist()
 
 # Adds the artwork to the database
@@ -74,6 +74,7 @@ def add_artwork(db, name, artwork, price):
             new_artwork(name,artwork, price)
     except sqlite3.Error as e:
         print('Name not found')
+        print(e)
     finally:
         con.close()
 
