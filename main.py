@@ -64,7 +64,7 @@ def add_artwork(db, name, artwork, price):
         con.close()
 
         if artist == None:
-            print('\nThe artist is not in the database.\n')
+            print('\n**The artist is not in the database**\n')
             email = get.artist_email() 
             add_artist(name, email) # Calls the add artist function
             new_artwork(name,artwork, price)
@@ -111,14 +111,17 @@ def display_artwork(db, artist):
             get.for_sale_artwork(r)
 
     con.close()
-        
+
+# Deletes a record from the database
 def delete_artwork(db, name):
+
     con = sqlite3.connect(db)
     curs = con.cursor()
-    curs.execute("DELETE FROM artwork WHERE name = ?", (name,) )
+    curs.execute("DELETE FROM artwork WHERE name = (?)", (name,) )
     con.commit() # Save changes to database
     con.close() # Close connection
 
+# Modifies the artwork availablity 
 def change_availability(db, artwork, availability):
     try:
         con = sqlite3.connect(db)
