@@ -25,7 +25,9 @@ def main():
         elif choice == '5':
             pass
         elif choice == '6':
-            pass
+            artwork = get.artwork_name()  # Prompts for the artwork's name
+            status = get.artwork_availability()
+            change_availability(db, artwork, status)
         elif choice == '7':
             break
         else:
@@ -58,10 +60,7 @@ def add_artwork(db, name, artwork, price):
         rows = con.execute(get_artist_sql, (name,) )
         artist = rows.fetchone()
         con.close()
-        """ 
-        Checks to see if the artist is in the database prior to entering the artwork info.
-        If the artist is not in the database the artist is added first to the artist table first before the artwork is added to the database.
-        """
+
         if artist == None:
             print('\nThe artist is not in the database.\n')
             email = get.artist_email() 
@@ -79,6 +78,7 @@ def new_artwork(name, artwork, price):
     new_artwork = Artwork(name, artwork, price)
     new_artwork.add_artwork()
 
+# Searches for all the artwork of an artist regardless if it is sold or not
 def search_artwork(db, artist):
     get_artwork_by_name_sql = 'SELECT name, * FROM artwork WHERE artist = ?'
 
@@ -88,11 +88,12 @@ def search_artwork(db, artist):
 
     # Prints the search result
     for r in rows:
-        if r['availability'] == '1':
-            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: for sale")
-        if r['availability'] == '0':
-            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: sold")
-        
+        if r['availability'] == 'for sale':
+            get.for_sale_artwork(r)
+        if r['availability'] == 'sold':
+            get.sold_artwork(r)
+
+# Displays the available artwork for a specified artist
 def display_artwork(db, artist):
     get_artwork_by_name_sql = 'SELECT name, * FROM artwork WHERE artist = ?'
 
@@ -102,15 +103,22 @@ def display_artwork(db, artist):
 
     # Prints the search result
     for r in rows:
-        if r['availability'] == '1':
-            print(f"\nArtist: {r['artist']}\nArtwork: {r['name']}\nPrice: ${r['price']}\nStatus: for sale")
+        if r['availability'] == 'for sale':
+            get.for_sale_artwork(r)
         
-
 def delete_artwork():
     pass
 
-def change_availability():
-    pass
+def change_availability(db, artwork, availability):
+
+        con = sqlite3.connect(db)
+
+        # Updates the artwork availability
+        con.execute('''UPDATE artwork SET availability = ? WHERE name = ?''', (availability, artwork))
+        con.commit() # Saves changes to the database
+        con.close() # Close connection
+    except:
+        print('\nError: Something broke')
 
 if __name__=='__main__':
     main()
