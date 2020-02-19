@@ -1,4 +1,4 @@
-"""Groups all the repeating prompts and prints for neater apearance
+"""Grouped all the repeating prompts and prints for neater apearance
 """
 
 # Prompts the user to enter the name and email of the artist
