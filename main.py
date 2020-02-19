@@ -44,6 +44,7 @@ def menu():
     '6: change availability status of an artwork\n'
     '7: Quit\n')
 
+# Adds the artist info to the artist table
 def add_artist(name, email):
     new_artist = Artist(name.lower(), email.lower())
     new_artist.add_artist()
