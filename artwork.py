@@ -8,7 +8,7 @@ class Artwork:
     Represent one artwork in the program
     """
 
-    def __init__(self, artist, artwork, price, availability=True):
+    def __init__(self, artist, artwork, price, availability='for sale'):
         self.artist = artist
         self.artwork = artwork
         self.price = price
