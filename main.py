@@ -48,7 +48,8 @@ def menu():
 def add_artist(name, email):
     new_artist = Artist(name.lower(), email.lower())
     new_artist.add_artist()
-    
+
+# Adds the artwork to the database
 def add_artwork(db, name, artwork, price):
     """
     Checks first to see if the artist is in the database if not prompts the user to enter the artist info
@@ -63,6 +64,7 @@ def add_artwork(db, name, artwork, price):
         artist = rows.fetchone()
         con.close()
 
+        # Checks if the artist is in the database
         if artist == None:
             print('\n**The artist is not in the database**\n')
             email = get.artist_email() 
