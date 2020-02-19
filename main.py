@@ -10,26 +10,26 @@ def main():
     while True:
         menu()
         choice = input('choice: ')
-        if choice == '1':
-            name, email = get.artist_info() # Prompt user to enter the artist info
+        if choice == '1': # Add new artist
+            name, email = get.artist_info() 
             add_artist(name, email) 
-        elif choice == '2':
-            name = get.artist_name()  # Prompts for the artist name
+        elif choice == '2': # Search for all artwork by artist
+            name = get.artist_name()  
             search_artwork(db, name)
-        elif choice == '3':
+        elif choice == '3': # Display available artwork for artist
             name = get.artist_name()
             display_artwork(db, name)
-        elif choice == '4':
-            name, artwork, price = get.artwork_info()  # Prompt user to enter artwork info
+        elif choice == '4': # Add new artwork
+            name, artwork, price = get.artwork_info()  
             add_artwork(db, name, artwork, price)
-        elif choice == '5':
+        elif choice == '5': # Delete artwork
             artwork = get.artwork_name()
             delete_artwork(db, artwork)
-        elif choice == '6':
-            artwork = get.artwork_name()  # Prompts for the artwork's name
+        elif choice == '6': # Change availability of artwork
+            artwork = get.artwork_name() 
             status = get.artwork_availability()
             change_availability(db, artwork, status)
-        elif choice == '7':
+        elif choice == '7': # Exit program
             break
         else:
             print('\nChoice is not in the menu')
@@ -95,6 +95,8 @@ def search_artwork(db, artist):
         if r['availability'] == 'sold':
             get.sold_artwork(r)
 
+    con.close()
+
 # Displays the available artwork for a specified artist
 def display_artwork(db, artist):
     get_artwork_by_name_sql = 'SELECT name, * FROM artwork WHERE artist = ?'
@@ -107,11 +109,13 @@ def display_artwork(db, artist):
     for r in rows:
         if r['availability'] == 'for sale':
             get.for_sale_artwork(r)
+
+    con.close()
         
-def delete_artwork(db, artwork):
+def delete_artwork(db, name):
     con = sqlite3.connect(db)
     curs = con.cursor()
-    curs.execute("DELETE FROM artwork WHERE name = ?", (artwork,) )
+    curs.execute("DELETE FROM artwork WHERE name = ?", (name,) )
     con.commit() # Save changes to database
     con.close() # Close connection
 
