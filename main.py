@@ -20,10 +20,11 @@ def main():
             name = get.artist_name()
             display_artwork(db, name)
         elif choice == '4':
-            name, artwork, price = get.artwork_info()  # Prompt user to enter info
+            name, artwork, price = get.artwork_info()  # Prompt user to enter artwork info
             add_artwork(db, name, artwork, price)
         elif choice == '5':
-            pass
+            artwork = get.artwork_name()
+            delete_artwork(db, artwork)
         elif choice == '6':
             artwork = get.artwork_name()  # Prompts for the artwork's name
             status = get.artwork_availability()
@@ -106,11 +107,15 @@ def display_artwork(db, artist):
         if r['availability'] == 'for sale':
             get.for_sale_artwork(r)
         
-def delete_artwork():
-    pass
+def delete_artwork(db, artwork):
+    con = sqlite3.connect(db)
+    curs = con.cursor()
+    curs.execute("DELETE FROM artwork WHERE name = ?", (artwork,) )
+    con.commit() # Save changes to database
+    con.close() # Close connection
 
 def change_availability(db, artwork, availability):
-
+    try:
         con = sqlite3.connect(db)
 
         # Updates the artwork availability
